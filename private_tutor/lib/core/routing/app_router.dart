@@ -5,6 +5,12 @@ import 'package:go_router/go_router.dart';
 import '../auth/auth_repository.dart';
 import '../../features/auth/login_screen.dart';
 import '../../features/dashboard/dashboard_screen.dart';
+import '../../features/students/add_student_screen.dart';
+import '../../features/students/students_screen.dart';
+import '../../features/dues/dues_screen.dart';
+import '../../features/received/received_screen.dart';
+import '../../data/models/student.dart';
+import 'app_shell.dart';
 
 final appRouterProvider = Provider<GoRouter>((ref) {
   final refresh = _RouterRefresh();
@@ -32,9 +38,53 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         builder: (context, state) => const _AuthLoadingScreen(),
       ),
       GoRoute(path: '/login', builder: (context, state) => const LoginScreen()),
+      StatefulShellRoute.indexedStack(
+        builder: (context, state, navigationShell) =>
+            AppShell(navigationShell: navigationShell),
+        branches: [
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/home',
+                builder: (context, state) => const DashboardScreen(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/students',
+                builder: (context, state) => StudentsScreen(
+                  initialFilter: state.uri.queryParameters['filter'] ?? 'all',
+                ),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/add',
+                builder: (context, state) => AddStudentScreen(
+                  student: state.extra is Student
+                      ? state.extra as Student
+                      : null,
+                ),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/dues',
+                builder: (context, state) => const DuesScreen(),
+              ),
+            ],
+          ),
+        ],
+      ),
       GoRoute(
-        path: '/home',
-        builder: (context, state) => const DashboardScreen(),
+        path: '/received',
+        builder: (context, state) => const ReceivedScreen(),
       ),
     ],
   );

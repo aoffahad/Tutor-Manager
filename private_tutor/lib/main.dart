@@ -3,17 +3,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'core/auth/auth_repository.dart';
 import 'core/firebase/firebase_bootstrap.dart';
+import 'core/firebase/rollover_bootstrap.dart';
 import 'core/routing/app_router.dart';
 import 'core/theme/app_theme.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 
-
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   final AuthRepository authRepository =
       await FirebaseBootstrap.createAuthRepository();
@@ -21,7 +19,7 @@ Future<void> main() async {
   runApp(
     ProviderScope(
       overrides: [authRepositoryProvider.overrideWithValue(authRepository)],
-      child: const TuitionManagerApp(),
+      child: const RolloverBootstrap(child: TuitionManagerApp()),
     ),
   );
 }
